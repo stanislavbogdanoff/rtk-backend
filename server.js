@@ -29,6 +29,19 @@ app.post("/users", async (req, res) => {
   res.status(201).json(user);
 });
 
+app.get("/users/search", async (req, res) => {
+  const { searchString } = req.query;
+
+  const users = await User.find({
+    $or: [
+      { name: new RegExp(searchString, "i") },
+      { jobTitle: new RegExp(searchString, "i") },
+    ],
+  });
+
+  res.status(200).json(users);
+});
+
 app.get("/users/:userId", async (req, res) => {
   const { userId } = req.params;
 
