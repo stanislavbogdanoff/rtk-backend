@@ -114,13 +114,15 @@ app.post("/orders", async (req, res) => {
     return product.productId;
   });
 
-  // ["asdfzxv", "qwerqwer"]
+  // productsIds - массив айди по типу ["a234sdfz123xv", "qw1er234qwer"]
 
   const products = await Product.find({ _id: { $in: productsIds } });
 
   // products - массив двух товаров
 
   let sum = 0;
+
+  // цикл в цикле - find внутри forEach
 
   products.forEach(
     (product) =>
@@ -130,8 +132,6 @@ app.post("/orders", async (req, res) => {
           (orderProduct) => orderProduct.productId == product._id
         ).amount)
   );
-
-  // цикл в цикле - find внутри forEach
 
   await Promise.all(
     ordersData.orders.map((prod) => {
