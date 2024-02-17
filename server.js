@@ -22,38 +22,50 @@ mongoose
 
 app.use(express.json());
 
+/* AUTHORIZATION START */
+
+const generateToken = (id) => {
+  return jwt.sign({ id }, "abc123", {
+    expiresIn: "30d",
+  });
+};
+
 app.post("/register", async (req, res) => {
-  const { name, password, age, jobTitle } = req.body;
+  const { password } = req.body;
   const salt = await bcrypt.genSalt(10);
   const hashedPwd = await bcrypt.hash(password, salt);
   const user = await User.create({ ...req.body, password: hashedPwd });
 
-  res.status(200).json({
-    id: user._id,
-    name: user.name,
-    password: user.password,
-    age: user.age,
-    token: jwt.sign({ id: user._id }, "abc123", { expiresIn: "7d" }),
-  });
+  res.status(200).json(user);
 });
 
 app.post("/login", async (req, res) => {
   const { name, password } = req.body;
-  const user = await User.findOne({ name: name });
 
-  if (user && (await bcrypt.compare(password, user.password))) {
-    res.status(200).json({
-      id: user._id,
-      name: user.name,
-      password: user.password,
-      age: user.age,
-      token: jwt.sign({ id: user._id }, "abc123", { expiresIn: "7d" }),
-    });
+  const user = await User.findOne({ name });
+
+  console.log(user);
+
+  if (user) {
+    // User found, now check password
+    if (await bcrypt.compare(password, user.password)) {
+      // Passwords match, generate token and send response
+      res.json({
+        _id: user.id,
+        name: user.name,
+        token: generateToken(user._id),
+      });
+    } else {
+      // Passwords don't match
+      res.status(400).json({ error: "Invalid credentials!" });
+    }
   } else {
-    res.status(400);
-    throw new Error("Wrong credentials");
+    // User not found
+    res.status(400).json({ error: "Invalid credentials!" });
   }
 });
+
+/* AUTHORIZATION END */
 
 app.get("/users", async (req, res) => {
   const users = await User.find();
