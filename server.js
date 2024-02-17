@@ -36,7 +36,15 @@ app.post("/register", async (req, res) => {
   const hashedPwd = await bcrypt.hash(password, salt);
   const user = await User.create({ ...req.body, password: hashedPwd });
 
-  res.status(200).json(user);
+  res
+    .status(200)
+    .json({
+      name: user.name,
+      age: user.age,
+      jobTitle: user.jobTitle,
+      password: user.password,
+      token: generateToken(user._id),
+    });
 });
 
 app.post("/login", async (req, res) => {
