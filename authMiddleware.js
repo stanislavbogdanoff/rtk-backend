@@ -3,8 +3,11 @@ const { User } = require("./userSchema");
 
 const protect = async (req, res, next) => {
   let token;
+
   if (req.headers.authorization) {
     try {
+      // "Bearer afqwjfad;lkv'aerfjqerjg'wqefjq'kegpoakef;woenr"
+
       token = req.headers.authorization.split(" ")[1];
       const decoded = jwt.verify(token, "abc123");
       const user = await User.findById(decoded.id).select("-password");
@@ -12,8 +15,7 @@ const protect = async (req, res, next) => {
       next();
     } catch (error) {
       res.status(401);
-      console.error(error);
-      throw new Error("Not authorized");
+      throw new Error(error);
     }
   }
 };

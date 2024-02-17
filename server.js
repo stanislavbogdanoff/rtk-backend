@@ -25,7 +25,7 @@ app.use(express.json());
 /* AUTHORIZATION START */
 
 const generateToken = (id) => {
-  return jwt.sign({ id }, "abc123", {
+  return jwt.sign({ id: id }, "abc123", {
     expiresIn: "30d",
   });
 };
@@ -36,15 +36,13 @@ app.post("/register", async (req, res) => {
   const hashedPwd = await bcrypt.hash(password, salt);
   const user = await User.create({ ...req.body, password: hashedPwd });
 
-  res
-    .status(200)
-    .json({
-      name: user.name,
-      age: user.age,
-      jobTitle: user.jobTitle,
-      password: user.password,
-      token: generateToken(user._id),
-    });
+  res.status(200).json({
+    name: user.name,
+    age: user.age,
+    jobTitle: user.jobTitle,
+    password: user.password,
+    token: generateToken(user._id),
+  });
 });
 
 app.post("/login", async (req, res) => {
@@ -61,21 +59,23 @@ app.post("/login", async (req, res) => {
       res.json({
         _id: user.id,
         name: user.name,
+        age: user.age,
+        password: user.password,
         token: generateToken(user._id),
       });
     } else {
       // Passwords don't match
-      res.status(400).json({ error: "Invalid credentials!" });
+      res.status(400).json({ error: "Неверный пароль!" });
     }
   } else {
     // User not found
-    res.status(400).json({ error: "Invalid credentials!" });
+    res.status(400).json({ error: `Пользователь с именем ${name} не найден` });
   }
 });
 
 /* AUTHORIZATION END */
 
-app.get("/users", async (req, res) => {
+app.get("/users", protect, async (req, res) => {
   const users = await User.find();
   res.status(200).json(users);
 });
