@@ -15,7 +15,7 @@ const protect = async (req, res, next) => {
       next();
     } catch (error) {
       res.status(401).json({ error: error });
-      throw new Error(error);
+      // throw new Error(error);
     }
   } else {
     res.status(401).json({ error: "No token" });

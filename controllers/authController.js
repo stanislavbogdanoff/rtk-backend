@@ -28,13 +28,13 @@ const login = async (req, res) => {
 
   const user = await User.findOne({ name });
 
-  console.log(user);
+  // console.log(user);
 
   if (user) {
     // User found, now check password
     if (await bcrypt.compare(password, user.password)) {
       // Passwords match, generate token and send response
-      res.status(201).json({
+      res.status(200).json({
         _id: user.id,
         name: user.name,
         age: user.age,
@@ -43,11 +43,11 @@ const login = async (req, res) => {
       });
     } else {
       // Passwords don't match
-      res.status(400).json({ error: "Неверный пароль!" });
+      res.status(401).json({ error: "Неверный пароль!" });
     }
   } else {
     // User not found
-    res.status(400).json({ error: `Пользователь с именем ${name} не найден` });
+    res.status(401).json({ error: `Пользователь с именем ${name} не найден` });
   }
 };
 
