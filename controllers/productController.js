@@ -1,7 +1,7 @@
-const { Product } = require("../models/userSchema");
+const { Product } = require("../models/productSchema");
 
 const createProduct = async (req, res) => {
-  const product = await Produc.create(req.body);
+  const product = await Product.create(req.body);
   res.status(201).json(product);
 };
 

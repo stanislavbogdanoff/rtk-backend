@@ -7,8 +7,8 @@ const {
 } = require("../controllers/productController");
 const router = express.Router();
 
-router.post("/products", protect, createProduct);
-router.get("/products", getProducts);
-router.patch("/products/:productId", protect, updateProduct);
+router.post("/", protect, createProduct);
+router.get("/", getProducts);
+router.patch("/:productId", protect, updateProduct);
 
 module.exports = router;

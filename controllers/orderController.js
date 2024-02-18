@@ -1,4 +1,5 @@
-const { Product } = require("../models/userSchema");
+const { Order } = require("../models/orderSchema");
+const { Product } = require("../models/productSchema");
 
 const createOrder = async (req, res) => {
   const ordersData = req.body;
