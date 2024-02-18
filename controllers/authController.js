@@ -8,7 +8,7 @@ const generateToken = (id) => {
   });
 };
 
-const login = async (req, res) => {
+const register = async (req, res) => {
   const { password } = req.body;
   const salt = await bcrypt.genSalt(10);
   const hashedPwd = await bcrypt.hash(password, salt);
@@ -23,7 +23,7 @@ const login = async (req, res) => {
   });
 };
 
-const register = async (req, res) => {
+const login = async (req, res) => {
   const { name, password } = req.body;
 
   const user = await User.findOne({ name });
