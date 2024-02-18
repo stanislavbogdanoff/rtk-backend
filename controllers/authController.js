@@ -15,10 +15,10 @@ const login = async (req, res) => {
   const user = await User.create({ ...req.body, password: hashedPwd });
 
   res.status(200).json({
+    _id: user.id,
     name: user.name,
     age: user.age,
     jobTitle: user.jobTitle,
-    password: user.password,
     token: generateToken(user._id),
   });
 };
@@ -34,11 +34,11 @@ const register = async (req, res) => {
     // User found, now check password
     if (await bcrypt.compare(password, user.password)) {
       // Passwords match, generate token and send response
-      res.json({
+      res.status(201).json({
         _id: user.id,
         name: user.name,
         age: user.age,
-        password: user.password,
+        jobTitle: user.jobTitle,
         token: generateToken(user._id),
       });
     } else {
