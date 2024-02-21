@@ -10,7 +10,7 @@ const {
 } = require("../controllers/userController");
 const router = Router();
 
-router.get("/", getUsers);
+router.get("/", protect, getUsers);
 router.get("/", searchUsers);
 router.post("/", protect, createUser);
 router.get("/:userId", getUserById);

@@ -1,7 +1,8 @@
 const { Product } = require("../models/productSchema");
 
 const createProduct = async (req, res) => {
-  const product = await Product.create(req.body);
+  const imagePath = req.file.path;
+  const product = await Product.create({ ...req.body, image: imagePath });
   res.status(201).json(product);
 };
 
