@@ -12,9 +12,22 @@ const getProducts = async (req, res) => {
 };
 
 const updateProduct = async (req, res) => {
-  const { id } = req.params;
-  const product = await Product.findByIdAndUpdate(id, req.body, { new: true });
-  res.status(200).json(product);
+  const { productId } = req.params;
+  try {
+    const imagePath = req.file.path;
+    const newProduct = imagePath ? { ...req.body, image: imagePath } : req.body;
+    const product = await Product.findByIdAndUpdate(productId, newProduct, {
+      new: true,
+    });
+    res.status(200).json(product);
+  } catch (error) {
+    res
+      .status(500)
+      .json({
+        message: `Error updating product with id ${productId}`,
+        error: error,
+      });
+  }
 };
 
 module.exports = { createProduct, getProducts, updateProduct };

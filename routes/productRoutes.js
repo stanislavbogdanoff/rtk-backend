@@ -10,6 +10,6 @@ const router = express.Router();
 
 router.post("/", protect, upload.single("image"), createProduct);
 router.get("/", getProducts);
-router.patch("/:productId", protect, updateProduct);
+router.patch("/:productId", protect, upload.single("image"), updateProduct);
 
 module.exports = router;
