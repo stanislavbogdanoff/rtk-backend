@@ -7,7 +7,6 @@ const createProduct = async (req, res) => {
   const product = await Product.create({
     ...req.body,
     image: imagePath,
-    // numbers: JSON.parse(req.body.numbers),
   });
   res.status(201).json(product);
 };
@@ -24,11 +23,12 @@ const updateProduct = async (req, res) => {
     const product = await Product.findById(productId);
 
     if (product && imagePath && product.image) {
+      console.log("PRODUCT IMAGE => ", product.image);
       const oldImagePath = `./${product.image.split("\\").join("/")}`;
       if (fs.existsSync(oldImagePath)) {
         fs.unlinkSync(oldImagePath);
       } else {
-        console.log(`File does not exist: ${oldImagePath}`);
+        console.error(`File does not exist: ${oldImagePath}`);
       }
     }
 
