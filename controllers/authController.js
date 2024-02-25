@@ -25,10 +25,7 @@ const register = async (req, res) => {
 
 const login = async (req, res) => {
   const { name, password } = req.body;
-
   const user = await User.findOne({ name });
-
-  // console.log(user);
 
   if (user) {
     // User found, now check password

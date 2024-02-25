@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+const path = require("path");
 
 const cors = require("cors");
 corsOptions = {
@@ -17,6 +18,13 @@ app.use(express.json());
 connectDb();
 
 const port = process.env.PORT;
+
+app.use("/uploads", express.static(path.join(__dirname, "./uploads")));
+
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send("Internal Server Error");
+});
 
 // routes
 
