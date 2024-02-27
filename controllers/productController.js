@@ -2,7 +2,7 @@ const { Product } = require("../models/productSchema");
 const fs = require("fs");
 
 const createProduct = async (req, res) => {
-  console.log(req.file);
+  console.log("image path => ", req.file.path);
   const imagePath = req.file.path;
   const product = await Product.create({
     ...req.body,
@@ -25,9 +25,11 @@ const updateProduct = async (req, res) => {
     if (product && imagePath && product.image) {
       console.log("PRODUCT IMAGE => ", product.image);
       const oldImagePath = `./${product.image.split("\\").join("/")}`;
+      console.log("OLD IMAGE PATH => ", oldImagePath);
       if (fs.existsSync(oldImagePath)) {
         fs.unlinkSync(oldImagePath);
       } else {
+        // res.status(400).json({error: "some error"})
         console.error(`File does not exist: ${oldImagePath}`);
       }
     }

@@ -1,6 +1,10 @@
 const { Order } = require("../models/orderSchema");
 const { Product } = require("../models/productSchema");
 
+const getOrders = async (req, res) => {
+  const orders = await Order.find().populate("user");
+};
+
 const createOrder = async (req, res) => {
   const ordersData = req.body;
 

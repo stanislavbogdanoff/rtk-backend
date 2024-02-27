@@ -11,7 +11,7 @@ const {
 const router = Router();
 
 router.get("/", protect, getUsers);
-router.get("/", searchUsers);
+router.get("/search", searchUsers);
 router.post("/", protect, createUser);
 router.get("/:userId", getUserById);
 router.patch("/:userId", protect, updateUser);

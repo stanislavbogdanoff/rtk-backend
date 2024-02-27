@@ -14,6 +14,8 @@ const createUser = async (req, res) => {
 const searchUsers = async (req, res) => {
   const { searchString } = req.query;
 
+  console.log("req query => ", req.query);
+
   const users = await User.find({
     $or: [
       { name: new RegExp(searchString, "i") },
