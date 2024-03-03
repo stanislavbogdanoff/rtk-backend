@@ -16,6 +16,17 @@ const getProducts = async (req, res) => {
   res.status(200).json(products);
 };
 
+const searchProducts = async (req, res) => {
+  const { searchString } = req.query;
+  const products = await Product.find({
+    $or: [
+      { name: new RegExp(searchString, "i") },
+      { description: new RegExp(searchString, "i") },
+    ],
+  });
+  res.status(200).json(products);
+};
+
 const updateProduct = async (req, res) => {
   const { productId } = req.params;
   try {
@@ -53,4 +64,4 @@ const updateProduct = async (req, res) => {
   }
 };
 
-module.exports = { createProduct, getProducts, updateProduct };
+module.exports = { createProduct, getProducts, updateProduct, searchProducts };
