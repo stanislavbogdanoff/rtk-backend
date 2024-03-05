@@ -30,7 +30,10 @@ const getItemsNumberInCart = async (req, res) => {
 
 const getUserDetails = async (req, res) => {
   const user = await User.findById(req.user._id).populate("cart.product");
-  const orders = (await Order.find({ user: req.user._id })) || [];
+  const orders =
+    (await Order.find({ user: req.user._id }).populate(
+      "orderProducts.product"
+    )) || [];
   user.orders = orders;
   res.status(200).json(user);
 };
