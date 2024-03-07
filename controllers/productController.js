@@ -1,3 +1,4 @@
+const { Order } = require("../models/orderSchema");
 const { Product } = require("../models/productSchema");
 const fs = require("fs");
 
@@ -9,6 +10,14 @@ const createProduct = async (req, res) => {
     image: imagePath,
   });
   res.status(201).json(product);
+};
+
+const getProductDetails = async (req, res) => {
+  const { productId } = req.params;
+
+  const product = await Product.findById(productId);
+
+  res.status(200).json(product);
 };
 
 const getProducts = async (req, res) => {
@@ -64,4 +73,27 @@ const updateProduct = async (req, res) => {
   }
 };
 
-module.exports = { createProduct, getProducts, updateProduct, searchProducts };
+const editProduct = async (req, res) => {
+  const { productId } = req.params;
+  const product = await Product.findByIdAndUpdate(productId, req.body, {
+    new: true,
+  });
+
+  res.status(200).json(product);
+};
+
+const deleteProduct = async (req, res) => {
+  const { productId } = req.params;
+  const product = await Product.findByIdAndDelete(productId);
+  res.status(200).json(product);
+};
+
+module.exports = {
+  createProduct,
+  getProducts,
+  updateProduct,
+  searchProducts,
+  deleteProduct,
+  getProductDetails,
+  editProduct,
+};

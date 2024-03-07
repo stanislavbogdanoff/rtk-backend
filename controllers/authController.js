@@ -19,6 +19,7 @@ const register = async (req, res) => {
     name: user.name,
     age: user.age,
     jobTitle: user.jobTitle,
+    role: user.role,
     token: generateToken(user._id),
   });
 };
@@ -36,6 +37,7 @@ const login = async (req, res) => {
         name: user.name,
         age: user.age,
         jobTitle: user.jobTitle,
+        role: user.role,
         token: generateToken(user._id),
       });
     } else {
