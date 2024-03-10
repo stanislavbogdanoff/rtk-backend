@@ -3,13 +3,24 @@ const { Product } = require("../models/productSchema");
 const fs = require("fs");
 
 const createProduct = async (req, res) => {
-  console.log("image path => ", req.file.path);
-  const imagePath = req.file.path;
-  const product = await Product.create({
-    ...req.body,
-    image: imagePath,
-  });
-  res.status(201).json(product);
+  try {
+    let imagePath;
+
+    if (req.file && req.file.path) {
+      console.log("image path => ", req.file.path);
+      imagePath = req.file.path;
+    }
+
+    const newProductData = imagePath
+      ? { ...req.body, image: imagePath }
+      : req.body;
+
+    const product = await Product.create(newProductData);
+
+    res.status(201).json(product);
+  } catch (error) {
+    res.status(500).json({ message: JSON.stringify(error) });
+  }
 };
 
 const getProductDetails = async (req, res) => {
@@ -26,14 +37,24 @@ const getProducts = async (req, res) => {
 };
 
 const searchProducts = async (req, res) => {
-  const { searchString } = req.query;
-  const products = await Product.find({
+  const { searchString, page = 1, limit = 6 } = req.query;
+  const count = await Product.countDocuments({
     $or: [
       { name: new RegExp(searchString, "i") },
       { description: new RegExp(searchString, "i") },
     ],
   });
-  res.status(200).json(products);
+  const products = await Product.find({
+    $or: [
+      { name: new RegExp(searchString, "i") },
+      { description: new RegExp(searchString, "i") },
+    ],
+  })
+    .limit(+limit)
+    .skip((page - 1) * limit);
+  res
+    .status(200)
+    .json({ data: products, totalPages: Math.ceil(count / limit) });
 };
 
 const updateProduct = async (req, res) => {

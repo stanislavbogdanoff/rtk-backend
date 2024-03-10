@@ -19,6 +19,59 @@ const addItemToCart = async (req, res) => {
   }
 };
 
+const removeItemFromCart = async (req, res) => {
+  try {
+    const reqUser = req.user;
+    const { productId } = req.body;
+    const user = await User.findByIdAndUpdate(
+      reqUser._id,
+      {
+        $pull: { cart: { product: productId } },
+      },
+      { new: true }
+    );
+
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(500).json({ message: JSON.stringify(error) });
+  }
+};
+
+//@route  PATCH /users/cart/update
+const updateItemInCart = async (req, res) => {
+  try {
+    const reqUser = req.user;
+    const { productId, isInc } = req.body;
+    const user = await User.findById(reqUser._id);
+
+    const productToUpdate = user.cart.find((item) => item.product == productId);
+
+    const numberToUpdate = isInc
+      ? productToUpdate.amount + 1
+      : productToUpdate.amount - 1;
+
+    if (numberToUpdate === 0)
+      return res.status(200).json({ message: "Cannot decrease further" });
+
+    const updatedUser = await User.findByIdAndUpdate(
+      reqUser._id,
+      {
+        $set: {
+          "cart.$[elem].amount": numberToUpdate,
+        },
+      },
+      {
+        arrayFilters: [{ "elem.product": productId }],
+        new: true,
+      }
+    );
+
+    res.status(200).json(updatedUser);
+  } catch (error) {
+    res.status(500).json({ message: JSON.stringify(error.message) });
+  }
+};
+
 const getItemsNumberInCart = async (req, res) => {
   const user = await User.findById(req.user._id);
 
@@ -117,4 +170,6 @@ module.exports = {
   getItemsNumberInCart,
   getUserDetails,
   postGetUserProfile,
+  removeItemFromCart,
+  updateItemInCart,
 };
